@@ -157,9 +157,9 @@
         .mensaje {
             max-width: 85%;
             margin-bottom: 20px;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 15px;
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* ✅ Mantiene saltos de línea y espacios */
         }
 
         .mensaje-usuario {
@@ -172,13 +172,17 @@
             color: #e5e7eb;
         }
 
+        /* ✅ Estilo de enlaces cliqueables */
         .mensaje-asistente a {
             color: #60a5fa;
             text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
         .mensaje-asistente a:hover {
             text-decoration: underline;
+            color: #93c5fd;
         }
 
         /* Caja de entrada */
@@ -342,6 +346,12 @@
         const inicio = document.getElementById('inicio');
         const accesos = document.getElementById('accesos');
 
+        // ✅ Convierte enlaces en cliqueables
+        function convertirEnlaces(texto) {
+            const patron = /(https?:\/\/[^\s\n]+)/g;
+            return texto.replace(patron, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+        }
+
         // Nuevo chat
         function nuevoChat() {
             chat.innerHTML = '';
@@ -351,11 +361,16 @@
             entrada.value = '';
         }
 
-        // Agregar mensaje
+        // Agregar mensaje (con enlaces ya convertidos)
         function agregarMensaje(texto, tipo) {
             const div = document.createElement('div');
             div.classList.add('mensaje', `mensaje-${tipo}`);
-            div.textContent = texto;
+            // Si es del asistente, convertimos enlaces y usamos HTML
+            if (tipo === 'asistente') {
+                div.innerHTML = convertirEnlaces(texto);
+            } else {
+                div.textContent = texto;
+            }
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
         }
