@@ -7,7 +7,6 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Descargar recursos de NLTK de forma segura para Render
 nltk.data.path.append('/tmp/nltk_data')
 nltk.download('punkt', download_dir='/tmp/nltk_data')
 nltk.download('stopwords', download_dir='/tmp/nltk_data')
@@ -15,225 +14,202 @@ nltk.download('wordnet', download_dir='/tmp/nltk_data')
 
 app = Flask(__name__)
 
-# ==================== BASE DE CONOCIMIENTO + CUESTIONARIOS ====================
+# ==================== BASE COMPLETA: EXPLICACIÓN + FUENTES + CUESTIONARIO ====================
 base_conocimiento = [
     # Saludos
-    {"pregunta": "hola", "respuesta": "¡Hola! Soy tu asistente de estudios. Pregúntame sobre temas de secundaria, te daré información, enlaces y un cuestionario para practicar.", "cuestionario": None},
+    {"pregunta": "hola", "respuesta": "¡Hola! Soy INDI, tu asistente de estudios. Elige un tema y te daré información, fuentes confiables y un cuestionario para practicar 😊", "cuestionario": None},
     {"pregunta": "buenos dias", "respuesta": "¡Buenos días! ¿Qué tema quieres aprender hoy?", "cuestionario": None},
     {"pregunta": "adios", "respuesta": "¡Hasta luego! Vuelve cuando quieras seguir aprendiendo.", "cuestionario": None},
 
-    # Categorías generales
-    {"pregunta": "matemáticas", "respuesta": """📚 Las matemáticas estudian cantidades, estructuras, formas y sus cambios. Aquí tienes recursos confiables:
+    # Matemáticas
+    {"pregunta": "matemáticas", "respuesta": """📚 **¿Qué son?** Estudia cantidades, estructuras, formas y los cambios en todo lo que nos rodea.
 
 🔗 https://es.khanacademy.org/es/matematicas
-📝 Descripción: Cursos gratuitos desde nivel básico hasta avanzado, con ejercicios interactivos.
+📝 Cursos gratuitos desde nivel básico hasta avanzado, con ejercicios interactivos.
 
 🔗 https://www.universoformulas.com/
-📝 Descripción: Explicaciones, fórmulas y ejemplos resueltos de todos los temas.
+📝 Explicaciones claras, fórmulas y ejemplos resueltos paso a paso.
 
 🔗 https://www.ck12.org/math/
-📝 Descripción: Material educativo adaptado para secundaria con actividades prácticas.""",
+📝 Material adaptado para secundaria con actividades y esquemas sencillos.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Matemáticas**
-1. ¿Qué estudian las matemáticas principalmente?
-2. ¿Cómo se llama el número que está arriba en una fracción?
-3. ¿Cuál es el resultado de 3 × 8?
+📋 **Cuestionario rápido**
+1. ¿Qué estudian principalmente las matemáticas?
+2. ¿Cómo se llama el número de arriba en una fracción?
+3. ¿Cuánto es 7 × 9?
 4. ¿Qué tipo de número es el 7: primo o compuesto?
-5. ¿Cuántos lados tiene un triángulo?
-    """},
+5. ¿Cuántos lados tiene un triángulo?"""},
 
-    {"pregunta": "ciencias", "respuesta": """📚 Las ciencias estudian el mundo natural, sus fenómenos y leyes. Incluye biología, física, química y más:
+    # Ciencias
+    {"pregunta": "ciencias", "respuesta": """📚 **¿Qué son?** Estudian el mundo natural, los seres vivos y los fenómenos que ocurren en la Tierra y el universo. Incluye biología, física y química.
 
 🔗 https://es.khanacademy.org/es/ciencia
-📝 Descripción: Lecciones completas por áreas científicas con videos y ejercicios.
+📝 Lecciones completas con videos y ejercicios prácticos.
 
 🔗 https://www.nationalgeographic.org/education/
-📝 Descripción: Material visual y explicativo sobre naturaleza, espacio y descubrimientos.
+📝 Información visual y fiable sobre naturaleza y descubrimientos.
 
 🔗 https://www.britannica.com/science
-📝 Descripción: Información revisada por especialistas en todas las ramas de la ciencia.""",
+📝 Artículos revisados por especialistas en todas las ramas científicas.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Ciencias**
+📋 **Cuestionario rápido**
 1. ¿Qué es la fotosíntesis?
-2. ¿Cuál es el planeta más cercano al Sol?
-3. ¿De qué está hecha la materia?
-4. ¿Qué gas necesitan las plantas para vivir?
-5. ¿Qué parte del cuerpo bombea la sangre?
-    """},
+2. ¿Cuál es el planeta donde vivimos?
+3. ¿Qué gas necesitan las plantas para vivir?
+4. ¿Qué órgano bombea la sangre?
+5. ¿De qué está hecho el agua?"""},
 
-    {"pregunta": "lenguaje", "respuesta": """📚 El lenguaje es la capacidad de comunicarse, y la lingüística estudia su estructura y uso:
+    # Lenguaje
+    {"pregunta": "lenguaje", "respuesta": """📚 **¿Qué es?** Es la capacidad de comunicarnos, y estudia las palabras, oraciones y las reglas para usar bien el idioma español.
 
 🔗 https://www.rae.es/drae
-📝 Descripción: Diccionario oficial y normas de la Real Academia Española.
+📝 Diccionario oficial y normas correctas del idioma.
 
 🔗 https://concepto.de/lenguaje/
-📝 Descripción: Definición, tipos y funciones del lenguaje humano.
+📝 Definiciones sencillas sobre palabras y tipos de lenguaje.
 
 🔗 https://www.portaleducativo.net/lenguaje/
-📝 Descripción: Ejercicios y explicaciones de gramática y literatura para secundaria.""",
+📝 Ejercicios de gramática y ortografía para secundaria.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Lenguaje**
-1. ¿Qué es un sustantivo?
-2. ¿Cuáles son las partes principales de una oración?
-3. ¿Qué es un verbo?
-4. ¿Qué tipo de sustantivo es "Lima": propio o común?
-5. ¿Qué signo se usa para terminar una oración?
-    """},
+📋 **Cuestionario rápido**
+1. ¿Qué nombra un sustantivo?
+2. ¿Qué expresa un verbo?
+3. ¿Cuál es la diferencia entre sustantivo propio y común?
+4. ¿Qué signo se usa al terminar una oración?
+5. ¿Qué es una oración?"""},
 
     # Historia del Perú
-    {"pregunta": "historia del Perú", "respuesta": """📚 La historia del Perú se divide en: Etapa Prehispánica, Conquista, Virreinato, Emancipación, República y Época Contemporánea.
-
-🔗 https://www.superprof.pe/blog/peru-proceso-historico/
-📝 Descripción: Resumen estructurado de todas las etapas históricas del Perú, con fechas y sucesos clave.
+    {"pregunta": "historia del Perú", "respuesta": """📚 **¿Qué es?** Narra los sucesos del territorio peruano, divididos en: culturas antiguas, Imperio Inca, conquista, virreinato, independencia y república.
 
 🔗 https://historiaperuana.pe/
-📝 Descripción: Portal especializado en historia peruana, con artículos detallados y fuentes confiables.
+📝 Portal especializado con fechas y sucesos clave.
 
-🔗 https://www.donquijote.org/es/cultura-peruana/historia/
-📝 Descripción: Explicación sencilla y organizada de la evolución histórica del país.""",
+🔗 https://www.superprof.pe/blog/peru-proceso-historico/
+📝 Resumen estructurado de todas las etapas históricas.
+
+🔗 https://www.gob.pe/ministeriodecultura/historia
+📝 Información oficial del Ministerio de Cultura.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Historia del Perú**
+📋 **Cuestionario rápido**
 1. ¿Cuál es la civilización más antigua del Perú?
 2. ¿En qué año se proclamó la independencia?
 3. ¿Quién proclamó la independencia en Lima?
 4. ¿Cómo se llamó el imperio de los incas?
-5. ¿Cuáles son las etapas principales de la historia peruana?
-    """},
+5. ¿Quién fue José de San Martín?"""},
 
-    {"pregunta": "culturas preincas", "respuesta": """📚 Las principales culturas preincas son: Caral, Chavín, Paracas, Nazca, Moche, Tiahuanaco, Wari y Chimú.
-
-🔗 https://es.slideshare.net/slideshow/las-culturas-pre-incaicas-21961494/21961494
-📝 Descripción: Presentación detallada con características, organización y logros de cada cultura.
+    # Culturas Preincas
+    {"pregunta": "culturas preincas", "respuesta": """📚 **¿Qué son?** Son las civilizaciones que se desarrollaron en el Perú antes del Imperio Inca: Caral, Chavín, Paracas, Nazca, Moche, Wari, Tiahuanaco y Chimú.
 
 🔗 https://culturas-preincas.com/
-📝 Descripción: Información completa dedicada exclusivamente a cada civilización prehispánica.
+📝 Información completa de cada civilización.
 
-🔗 https://www.studocu.com/pe/document/universidad-nacional-autonoma-de-chota/social-historia/las-culturas-pre-incas-del-peru/118197986
-📝 Descripción: Resumen académico con datos precisos sobre las culturas anteriores a los incas.""",
+🔗 https://es.slideshare.net/slideshow/las-culturas-pre-incaicas-21961494/21961494
+📝 Presentación detallada con características y logros.
+
+🔗 https://www.museoarqueologicodelima.gob.pe/culturas-prehispanicas/
+📝 Datos oficiales del Museo Arqueológico.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Culturas Preincas**
-1. ¿Cuál es la civilización más antigua de América?
-2. ¿Qué cultura construyó las famosas líneas de Nazca?
+📋 **Cuestionario rápido**
+1. ¿Cuál es la cultura más antigua de América?
+2. ¿Qué cultura hizo las famosas líneas de Nazca?
 3. ¿Dónde se ubicó la cultura Chavín?
-4. ¿Qué cultura se desarrolló en la costa norte y fue experta en orfebrería?
-5. ¿Cuál fue la cultura que dominó los Andes antes de los incas?
-    """},
+4. ¿Qué cultura fue experta en orfebrería?
+5. ¿Qué cultura construyó la ciudad de Chan Chan?"""},
 
-    {"pregunta": "Imperio Incaico", "respuesta": """📚 El Imperio Incaico se desarrolló entre los años 1200 y 1532 d.C., con capital en Cusco.
+    # Imperio Incaico
+    {"pregunta": "Imperio Incaico", "respuesta": """📚 **¿Qué fue?** El imperio más grande de Sudamérica, también llamado Tahuantinsuyo, con capital en Cusco. Se desarrolló entre los años 1200 y 1532 d.C.
 
-🔗 https://www.culturarecreacionydeporte.gov.co/es/principal/noticias/historia-del-imperio-inca
-📝 Descripción: Explicación sobre el origen, expansión y caída del Tahuantinsuyo.
-
-🔗 https://www.perurail.com/es/blog/los-incas-del-tahuantinsuyo-el-imperio-mas-grande-de-sudamerica/
-📝 Descripción: Detalles sobre la organización social, caminos, arquitectura y legado incaico.
+🔗 https://www.perurail.com/es/blog/los-incas-del-tahuantinsuyo/
+📝 Detalles sobre su organización y caminos.
 
 🔗 https://www.chullostravelperu.com/blog/imperio-inca-historia-legado-peru
-📝 Descripción: Información clara sobre los líderes, costumbres y sitios arqueológicos del imperio.""",
+📝 Información sobre costumbres y sitios arqueológicos.
+
+🔗 https://www.machupicchu.gob.pe/historia-inca/
+📝 Datos oficiales de Machu Picchu y el imperio.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre el Imperio Incaico**
-1. ¿Cuál era la capital del Tahuantinsuyo?
-2. ¿Quién era la máxima autoridad incaica?
-3. ¿Qué significa "Tahuantinsuyo"?
-4. ¿En qué año llegaron los españoles al imperio inca?
-5. ¿Qué sistema usaban para contar y registrar datos?
-    """},
+📋 **Cuestionario rápido**
+1. ¿Qué significa "Tahuantinsuyo"?
+2. ¿Cuál era su capital?
+3. ¿Quién era la máxima autoridad?
+4. ¿Qué sistema usaban para contar?
+5. ¿En qué año llegaron los españoles?"""},
 
-    {"pregunta": "independencia del Perú", "respuesta": """📚 Se proclamó el 28 de julio de 1821 por José de San Martín, y se consolidó en 1824 con las batallas de Junín y Ayacucho.
-
-🔗 https://www.lifeder.com/independencia-del-peru/
-📝 Descripción: Explicación completa de causas, desarrollo y consecuencias del proceso de emancipación.
-
-🔗 https://estudiosindianos.up.edu.pe/recursos/humanidades-digitales-linea-de-tiempo-del-proceso-de-independencia-del-peru-1814-1824/
-📝 Descripción: Línea de tiempo con todos los sucesos clave de la independencia.
-
-🔗 https://www.bcrp.gob.pe/docs/Billetes-Monedas/Conmemorativas/2021/folleto-bicentenario-independencia.pdf
-📝 Descripción: Documento oficial del Banco Central con datos y fechas exactas del Bicentenario.""",
-    "cuestionario": """
-📋 **Cuestionario rápido sobre la Independencia**
-1. ¿En qué fecha se proclamó la independencia del Perú?
-2. ¿Quién fue el libertador que llegó a Lima en 1821?
-3. ¿En qué batalla se consolidó definitivamente la independencia?
-4. ¿Qué país ayudó principalmente con tropas y recursos?
-5. ¿Quién lideró el ejército en la batalla de Ayacucho?
-    """},
-
-    # Geografía
-    {"pregunta": "regiones naturales del Perú", "respuesta": """📚 El Perú tiene 3 regiones naturales principales: Costa, Sierra y Selva.
-
-🔗 https://www.grupodocenteperu.com/wp-content/uploads/2022/12/14-12-l-GRUPO-DOCENTE-PERU-l-CIENCIAS-SOCIALES.pdf
-📝 Descripción: Guía completa con clasificación, límites, clima y biodiversidad de cada región.
-
-🔗 https://www.ck12.org/search/?q=regiones+naturales+del+peru
-📝 Descripción: Material educativo con esquemas, mapas y ejercicios prácticos.
+    # Regiones Naturales
+    {"pregunta": "regiones naturales", "respuesta": """📚 **¿Qué son?** El territorio peruano se divide principalmente en 3 grandes regiones: Costa, Sierra y Selva, cada una con clima y vida propia.
 
 🔗 https://www.gob.pe/institucion/corpac/informes-publicaciones/3612934-regiones-del-peru
-📝 Descripción: Información oficial del Estado peruano sobre la división territorial y natural.""",
-    "cuestionario": """
-📋 **Cuestionario rápido sobre Regiones Naturales**
-1. ¿Cuáles son las 3 regiones naturales principales del Perú?
-2. ¿En qué región se encuentra el nevado Huascarán?
-3. ¿Qué clima predomina en la costa?
-4. ¿En qué región nace el río Amazonas?
-5. ¿Cuántas regiones naturales propuso el geógrafo Javier Pulgar Vidal?
-    """},
+📝 Información oficial del Estado peruano.
 
-    # Temas específicos
-    {"pregunta": "fracciones", "respuesta": """📚 Una fracción representa una parte de un todo: tiene numerador (la parte) y denominador (el total).
+🔗 https://www.grupodocenteperu.com/wp-content/uploads/2022/12/14-12-l-GRUPO-DOCENTE-PERU-l-CIENCIAS-SOCIALES.pdf
+📝 Guía completa con clima y biodiversidad.
+
+🔗 https://www.minam.gob.pe/biodiversidad/regiones-naturales/
+📝 Datos del Ministerio del Ambiente.""",
+    "cuestionario": """
+📋 **Cuestionario rápido**
+1. ¿Cuáles son las 3 regiones principales?
+2. ¿En qué región está el Machu Picchu?
+3. ¿Qué clima tiene la costa?
+4. ¿En qué región nace el río Amazonas?
+5. ¿Cuál es la región más alta?"""},
+
+    # Fracciones
+    {"pregunta": "fracciones", "respuesta": """📚 **¿Qué son?** Representan una parte de un todo: tienen un número de arriba (numerador) y uno de abajo (denominador).
 
 🔗 https://www.universoformulas.com/matematicas/aritmetica/fracciones/
-📝 Descripción: Explicación detallada, tipos y todas las operaciones con ejemplos resueltos.
+📝 Explicación detallada y ejemplos resueltos.
 
 🔗 https://rea.ceibal.edu.uy/elp/-qu-son-las-fracciones/qu_es_una_fraccin.html
-📝 Descripción: Definición sencilla con ejemplos de la vida cotidiana y esquemas claros.
+📝 Definición sencilla con ejemplos cotidianos.
 
 🔗 https://www.superprof.com.ar/blog/temas-basicos-fracciones/
-📝 Descripción: Guía para aprender a leer, identificar y usar fracciones correctamente.""",
+📝 Consejos para usarlas correctamente.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Fracciones**
-1. ¿Qué es una fracción?
-2. ¿Cómo se llama el número de arriba en una fracción?
+📋 **Cuestionario rápido**
+1. ¿Qué representa una fracción?
+2. ¿Cómo se llama el número de arriba?
 3. ¿Cómo se llama el número de abajo?
 4. ¿Cuánto es 1/2 + 1/2?
-5. ¿Qué tipo de fracción es 3/4: propia o impropia?
-    """},
+5. ¿Qué fracción es igual a la mitad?"""},
 
-    {"pregunta": "fotosíntesis", "respuesta": """📚 Proceso por el cual las plantas fabrican su propio alimento usando luz solar, agua y dióxido de carbono.
+    # Fotosíntesis
+    {"pregunta": "fotosíntesis", "respuesta": """📚 **¿Qué es?** El proceso por el cual las plantas fabrican su propio alimento usando luz solar, agua y aire.
 
 🔗 https://www.fundacionaquae.org/wiki/fotosintesis-plantas/
-📝 Descripción: Explicación paso a paso, elementos necesarios y su importancia para la vida en la Tierra.
+📝 Explicación paso a paso del proceso.
 
 🔗 https://es.khanacademy.org/science/ap-biology/cellular-energetics/photosynthesis/a/intro-to-photosynthesis
-📝 Descripción: Lección interactiva con gráficos y ejercicios para entender el proceso biológico.
+📝 Lección interactiva con gráficos.
 
 🔗 https://museovirtual.csic.es/salas/vida/vida10.htm
-📝 Descripción: Recurso educativo con infografías y ejemplos visuales.""",
+📝 Recurso visual con infografías.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Fotosíntesis**
-1. ¿Qué es la fotosíntesis?
-2. ¿Qué 3 elementos necesitan las plantas para hacerla?
-3. ¿Qué gas liberan las plantas en este proceso?
-4. ¿En qué parte de la planta ocurre principalmente?
-5. ¿Por qué es importante para los seres vivos?
-    """},
+📋 **Cuestionario rápido**
+1. ¿Qué necesitan las plantas para hacerla?
+2. ¿Qué gas liberan en este proceso?
+3. ¿En qué parte de la planta ocurre?
+4. ¿De qué color necesitan la luz?
+5. ¿Por qué es importante para nosotros?"""},
 
-    {"pregunta": "sustantivo", "respuesta": """📚 Palabra que nombra personas, animales, cosas, lugares, sentimientos o ideas.
+    # Sustantivos
+    {"pregunta": "sustantivos", "respuesta": """📚 **¿Qué son?** Palabras que sirven para nombrar personas, animales, cosas, lugares, sentimientos o ideas.
 
 🔗 https://concepto.de/sustantivo/
-📝 Descripción: Definición completa, clasificación y ejemplos de cada tipo de sustantivo.
+📝 Definición completa y clasificación con ejemplos.
 
 🔗 https://www.superprof.com.ar/blog/sustantivos-identificar/
-📝 Descripción: Consejos y ejercicios para reconocer y usar sustantivos en oraciones.
+📝 Ejercicios para reconocerlos fácilmente.
 
-🔗 https://www3.gobiernodecanarias.org/medusa/ecoblog/msuaump/adaptacion-2o-de-eso/2-los-sustantivos/
-📝 Descripción: Material escolar con explicaciones adaptadas para secundaria.""",
+🔗 https://www.rae.es/drae/sustantivo
+📝 Normas oficiales de uso de la RAE.""",
     "cuestionario": """
-📋 **Cuestionario rápido sobre Sustantivos**
+📋 **Cuestionario rápido**
 1. ¿Qué nombra un sustantivo?
-2. ¿Cuál es la diferencia entre sustantivo propio y común?
-3. ¿Qué tipo es "casa"?
-4. ¿Qué tipo es "María"?
-5. ¿Es "amor" un sustantivo concreto o abstracto?
-    """}
+2. ¿Cuál es la diferencia entre propio y común?
+3. ¿Qué tipo es "Lima"?
+4. ¿Qué tipo es "amor"?
+5. Escribe un sustantivo de animal."""}
 ]
 
 lemmatizador = WordNetLemmatizer()
@@ -257,21 +233,19 @@ def buscar_respuesta(pregunta_usuario):
     pregunta_limpia = limpiar_texto(pregunta_usuario)
     
     variantes = {
-        "quiero aprender sobre": "",
-        "quiero saber sobre": "",
-        "dime sobre": "",
-        "hablame de": "",
-        "que es": "",
-        "temas de": "",
+        "ciencia": "ciencias",
+        "matematica": "matemáticas",
+        "mate": "matemáticas",
+        "lengua": "lenguaje",
         "historia peru": "historia del Perú",
         "culturas antiguas": "culturas preincas",
         "incas": "Imperio Incaico",
-        "liberacion peru": "independencia del Perú",
-        "regiones peru": "regiones naturales del Perú",
-        "que es fotosintesis": "fotosíntesis",
+        "tahuantinsuyo": "Imperio Incaico",
+        "regiones peru": "regiones naturales",
+        "costa sierra selva": "regiones naturales",
         "que es fraccion": "fracciones",
-        "comunicacion": "lenguaje",
-        "lengua": "lenguaje"
+        "plantas comen luz": "fotosíntesis",
+        "que es sustantivo": "sustantivos"
     }
 
     for var, original in variantes.items():
@@ -282,14 +256,14 @@ def buscar_respuesta(pregunta_usuario):
     similitudes = cosine_similarity(vector_pregunta, matriz_tfidf)[0]
     indice_mejor = similitudes.argmax()
 
-    if similitudes[indice_mejor] > 0.05:
+    if similitudes[indice_mejor] > 0.03:
         respuesta_final = respuestas[indice_mejor]
         cuestionario = cuestionarios[indice_mejor]
         if cuestionario:
             respuesta_final += "\n\n" + cuestionario
         return respuesta_final
     else:
-        return "No tengo información sobre eso aún. Intenta preguntar sobre historia del Perú, matemáticas, ciencias, lenguaje o comunicación, y te daré información, enlaces y un cuestionario para practicar."
+        return "Puedo ayudarte con estos temas: matemáticas, ciencias, lenguaje, historia del Perú, culturas preincas, Imperio Incaico, regiones naturales, fracciones, fotosíntesis y sustantivos 😊"
 
 @app.route('/')
 def inicio():
@@ -300,7 +274,7 @@ def consultar():
     datos = request.get_json()
     return jsonify({"respuesta": buscar_respuesta(datos.get("pregunta", ""))})
 
-# Configuración para Render
+# Configuración final para Render
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
