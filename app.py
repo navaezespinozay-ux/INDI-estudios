@@ -17,9 +17,7 @@ except:
 
 app = Flask(__name__)
 
-# ==================== BASE DE CONOCIMIENTO COMPLETA ====================
 base_conocimiento = [
-    # Saludos
     {"pregunta": "hola", "respuesta": "¡Hola! Soy INDI 😊 Estoy para explicarte temas y hacerte practicar. ¿Qué quieres aprender hoy?", "accion": None},
     {"pregunta": "buenos dias", "respuesta": "¡Buenos días! ¿En qué te ayudo hoy?", "accion": None},
     {"pregunta": "buenas tardes", "respuesta": "¡Buenas tardes! Cuéntame qué tema te interesa.", "accion": None},
@@ -27,10 +25,13 @@ base_conocimiento = [
     {"pregunta": "quien eres", "respuesta": "Soy INDI, tu asistente de estudios. Te explico temas y te hago cuestionarios cuando tú quieras.", "accion": None},
     {"pregunta": "adios", "respuesta": "¡Hasta luego! Vuelve cuando quieras seguir aprendiendo 😊", "accion": None},
 
-    # Temas principales
     {"pregunta": "matemáticas", "respuesta": """📚 **Matemáticas**
 Estudia cantidades, formas y cambios. Tiene aritmética, geometría, álgebra y estadística.
+📚 Fuentes:
 🔗 https://es.khanacademy.org/math
+🔗 https://www.matematicas18.com/
+🔗 https://www.universoformulas.com/
+🔗 https://www.educaplay.com/matematicas/
 ¿Quieres el cuestionario? Di: hazme el cuestionario""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Qué estudian las matemáticas?
@@ -47,7 +48,11 @@ Estudia cantidades, formas y cambios. Tiene aritmética, geometría, álgebra y 
 
     {"pregunta": "ciencias", "respuesta": """📚 **Ciencias**
 Estudia la naturaleza, seres vivos y fenómenos. Hay naturales, sociales y formales.
+📚 Fuentes:
 🔗 https://es.khanacademy.org/science
+🔗 https://www.nationalgeographicla.com/ciencia
+🔗 https://www.cienciafacil.com/
+🔗 https://www.educ.ar/recursos/ciencias-naturales
 ¿Quieres practicar? Pídeme el cuestionario""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Qué es la fotosíntesis?
@@ -64,7 +69,11 @@ Estudia la naturaleza, seres vivos y fenómenos. Hay naturales, sociales y forma
 
     {"pregunta": "historia del Perú", "respuesta": """📚 **Historia del Perú**
 Etapas: Prehispánica, Colonial y Republicana.
+📚 Fuentes:
 🔗 https://historiaperuana.pe/
+🔗 https://www.cultura.gob.pe/historia-del-peru
+🔗 https://www.universoperu.com/historia
+🔗 https://www.bnp.gob.pe/historia-del-peru/
 ¿Quieres el cuestionario?""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Civilización más antigua?
@@ -81,7 +90,11 @@ Etapas: Prehispánica, Colonial y Republicana.
 
     {"pregunta": "fracciones", "respuesta": """📚 **Fracciones**
 Representan partes de un todo: numerador / denominador.
+📚 Fuentes:
 🔗 https://www.universoformulas.com/matematicas/aritmetica/fracciones/
+🔗 https://es.khanacademy.org/math/arithmetic/fraction-arithmetic
+🔗 https://www.matematicas18.com/fracciones/
+🔗 https://www.educaplay.com/fracciones/
 ¿Quieres practicar?""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Qué es una fracción?
@@ -98,7 +111,11 @@ Representan partes de un todo: numerador / denominador.
 
     {"pregunta": "fotosíntesis", "respuesta": """📚 **Fotosíntesis**
 Las plantas usan luz, agua y CO₂ para hacer su alimento y liberar oxígeno.
-🔗 https://www.nationalgeographicla.com/ciencia
+📚 Fuentes:
+🔗 https://www.nationalgeographicla.com/ciencia/que-es-la-fotosintesis
+🔗 https://es.khanacademy.org/science/ap-biology/cellular-energetics/photosynthesis
+🔗 https://www.cienciafacil.com/fotosintesis.html
+🔗 https://www.botanica-uno.com/la-fotosintesis/
 ¿Cuestionario?""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Qué necesitan las plantas?
@@ -115,7 +132,11 @@ Las plantas usan luz, agua y CO₂ para hacer su alimento y liberar oxígeno.
 
     {"pregunta": "culturas preincas", "respuesta": """📚 **Culturas Preincas**
 Antes de los incas: Caral, Chavín, Nazca, Moche, Chimú...
+📚 Fuentes:
 🔗 https://www.universoperu.com/culturas-preincas
+🔗 https://www.cultura.gob.pe/culturas-prehispanicas
+🔗 https://historiaperuana.pe/culturas-preincas/
+🔗 https://www.museonacional.pe/culturas-preincas
 ¿Cuestionario?""",
     "cuestionario": """📋 Cuestionario:
 1. ¿La más antigua?
@@ -132,7 +153,11 @@ Antes de los incas: Caral, Chavín, Nazca, Moche, Chimú...
 
     {"pregunta": "imperio inca", "respuesta": """📚 **Imperio Inca / Tahuantinsuyo**
 Capital Cusco, máximo el Inca, usaban quipus.
+📚 Fuentes:
 🔗 https://www.machupicchu.gob.pe/historia/
+🔗 https://www.cultura.gob.pe/imperio-inca
+🔗 https://historiaperuana.pe/imperio-inca/
+🔗 https://www.incasdelperu.com/
 ¿Cuestionario?""",
     "cuestionario": """📋 Cuestionario:
 1. ¿Qué significa Tahuantinsuyo?
@@ -147,7 +172,6 @@ Capital Cusco, máximo el Inca, usaban quipus.
 4. Con quipus.
 5. 1532."""},
 
-    # Acciones: pedir cuestionario o respuestas
     {"pregunta": "cuestionario", "respuesta": "Aquí va el cuestionario del último tema que viste. ¿Quieres las respuestas después?", "accion": "mostrar_cuestionario"},
     {"pregunta": "hazme el cuestionario", "respuesta": "¡Vamos a practicar! Aquí tienes:", "accion": "mostrar_cuestionario"},
     {"pregunta": "ponme el cuestionario", "respuesta": "Claro, aquí está:", "accion": "mostrar_cuestionario"},
@@ -192,7 +216,6 @@ def buscar_respuesta(pregunta_usuario):
         if var in pregunta_limpia:
             pregunta_limpia = pregunta_limpia.replace(var, orig).strip()
 
-    # Preparar búsqueda
     preguntas_limpias = [limpiar_texto(i["pregunta"]) for i in base_conocimiento]
     vec = TfidfVectorizer()
     matriz = vec.fit_transform(preguntas_limpias)
@@ -200,25 +223,23 @@ def buscar_respuesta(pregunta_usuario):
     sim = cosine_similarity(vec_preg, matriz)[0]
     idx = sim.argmax()
 
-    # ACCIONES: Cuestionario o Respuestas
     if sim[idx] > 0.05 and "accion" in base_conocimiento[idx]:
         acc = base_conocimiento[idx]["accion"]
         txt = base_conocimiento[idx]["respuesta"]
         if acc == "mostrar_cuestionario":
             if ultimo_tema and ultimo_tema.get("cuestionario"):
                 return f"{txt}\n\n{ultimo_tema['cuestionario']}"
-            return "Primero pregúntame un tema (ej: matemáticas, ciencias) y luego te hago el cuestionario 😊"
+            return "Primero pregúntame un tema y luego te hago el cuestionario 😊"
         if acc == "mostrar_respuestas":
             if ultimo_tema and ultimo_tema.get("respuestas"):
                 return f"{txt}\n\n{ultimo_tema['respuestas']}"
-            return "Primero haz el cuestionario de un tema y luego te doy las respuestas 😊"
+            return "Primero haz el cuestionario de un tema 😊"
 
-    # Tema normal
     if sim[idx] > 0.05:
         ultimo_tema = base_conocimiento[idx]
         return ultimo_tema["respuesta"]
 
-    return "No te entendí bien. Pregúntame sobre matemáticas, ciencias, historia, fracciones, fotosíntesis o culturas peruanas 😊"
+    return "No te entendí bien. Pregúntame sobre matemáticas, ciencias, historia o temas del Perú 😊"
 
 @app.route('/')
 def inicio():
