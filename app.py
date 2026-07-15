@@ -14,7 +14,7 @@ nltk.download('wordnet', download_dir='/tmp/nltk_data')
 
 app = Flask(__name__)
 
-# ==================== BASE COMPLETA: EXPLICACIÓN + FUENTES + CUESTIONARIO ====================
+# ==================== BASE CON ENLACES CORREGIDOS Y FUNCIONALES ====================
 base_conocimiento = [
     # Saludos
     {"pregunta": "hola", "respuesta": "¡Hola! Soy INDI, tu asistente de estudios. Elige un tema y te daré información, fuentes confiables y un cuestionario para practicar 😊", "cuestionario": None},
@@ -24,13 +24,13 @@ base_conocimiento = [
     # Matemáticas
     {"pregunta": "matemáticas", "respuesta": """📚 **¿Qué son?** Estudia cantidades, estructuras, formas y los cambios en todo lo que nos rodea.
 
-🔗 https://es.khanacademy.org/es/matematicas
+🔗 https://es.khanacademy.org/math
 📝 Cursos gratuitos desde nivel básico hasta avanzado, con ejercicios interactivos.
 
-🔗 https://www.universoformulas.com/
+🔗 https://www.universoformulas.com/matematicas/
 📝 Explicaciones claras, fórmulas y ejemplos resueltos paso a paso.
 
-🔗 https://www.ck12.org/math/
+🔗 https://www.ck12.org/c/math/
 📝 Material adaptado para secundaria con actividades y esquemas sencillos.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
@@ -43,13 +43,13 @@ base_conocimiento = [
     # Ciencias
     {"pregunta": "ciencias", "respuesta": """📚 **¿Qué son?** Estudian el mundo natural, los seres vivos y los fenómenos que ocurren en la Tierra y el universo. Incluye biología, física y química.
 
-🔗 https://es.khanacademy.org/es/ciencia
+🔗 https://es.khanacademy.org/science
 📝 Lecciones completas con videos y ejercicios prácticos.
 
-🔗 https://www.nationalgeographic.org/education/
+🔗 https://www.nationalgeographicla.com/ciencia
 📝 Información visual y fiable sobre naturaleza y descubrimientos.
 
-🔗 https://www.britannica.com/science
+🔗 https://www.britannica.com/es/ciencia
 📝 Artículos revisados por especialistas en todas las ramas científicas.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
@@ -62,7 +62,7 @@ base_conocimiento = [
     # Lenguaje
     {"pregunta": "lenguaje", "respuesta": """📚 **¿Qué es?** Es la capacidad de comunicarnos, y estudia las palabras, oraciones y las reglas para usar bien el idioma español.
 
-🔗 https://www.rae.es/drae
+🔗 https://dle.rae.es/
 📝 Diccionario oficial y normas correctas del idioma.
 
 🔗 https://concepto.de/lenguaje/
@@ -84,11 +84,11 @@ base_conocimiento = [
 🔗 https://historiaperuana.pe/
 📝 Portal especializado con fechas y sucesos clave.
 
-🔗 https://www.superprof.pe/blog/peru-proceso-historico/
-📝 Resumen estructurado de todas las etapas históricas.
+🔗 https://www.gob.pe/ministeriodecultura/historia/
+📝 Información oficial del Ministerio de Cultura.
 
-🔗 https://www.gob.pe/ministeriodecultura/historia
-📝 Información oficial del Ministerio de Cultura.""",
+🔗 https://www.peru.travel/es/descubre-peru/historia
+📝 Resumen estructurado de todas las etapas históricas.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Cuál es la civilización más antigua del Perú?
@@ -100,14 +100,14 @@ base_conocimiento = [
     # Culturas Preincas
     {"pregunta": "culturas preincas", "respuesta": """📚 **¿Qué son?** Son las civilizaciones que se desarrollaron en el Perú antes del Imperio Inca: Caral, Chavín, Paracas, Nazca, Moche, Wari, Tiahuanaco y Chimú.
 
-🔗 https://culturas-preincas.com/
+🔗 https://www.museoarqueologicodelima.gob.pe/culturas-prehispanicas/
+📝 Datos oficiales del Museo Arqueológico del Perú.
+
+🔗 https://www.universoperu.com/culturas-preincas
 📝 Información completa de cada civilización.
 
-🔗 https://es.slideshare.net/slideshow/las-culturas-pre-incaicas-21961494/21961494
-📝 Presentación detallada con características y logros.
-
-🔗 https://www.museoarqueologicodelima.gob.pe/culturas-prehispanicas/
-📝 Datos oficiales del Museo Arqueológico.""",
+🔗 https://www.peru.travel/es/descubre-peru/historia/culturas-prehispanicas
+📝 Resumen detallado con características y logros.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Cuál es la cultura más antigua de América?
@@ -119,14 +119,14 @@ base_conocimiento = [
     # Imperio Incaico
     {"pregunta": "Imperio Incaico", "respuesta": """📚 **¿Qué fue?** El imperio más grande de Sudamérica, también llamado Tahuantinsuyo, con capital en Cusco. Se desarrolló entre los años 1200 y 1532 d.C.
 
-🔗 https://www.perurail.com/es/blog/los-incas-del-tahuantinsuyo/
+🔗 https://www.machupicchu.gob.pe/historia/
+📝 Datos oficiales de Machu Picchu y el imperio.
+
+🔗 https://www.cuscoperu.com/es/historia/imperio-inca
 📝 Detalles sobre su organización y caminos.
 
-🔗 https://www.chullostravelperu.com/blog/imperio-inca-historia-legado-peru
-📝 Información sobre costumbres y sitios arqueológicos.
-
-🔗 https://www.machupicchu.gob.pe/historia-inca/
-📝 Datos oficiales de Machu Picchu y el imperio.""",
+🔗 https://www.perurail.com/es/blog/el-imperio-inca/
+📝 Información sobre costumbres y sitios arqueológicos.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Qué significa "Tahuantinsuyo"?
@@ -138,14 +138,14 @@ base_conocimiento = [
     # Regiones Naturales
     {"pregunta": "regiones naturales", "respuesta": """📚 **¿Qué son?** El territorio peruano se divide principalmente en 3 grandes regiones: Costa, Sierra y Selva, cada una con clima y vida propia.
 
-🔗 https://www.gob.pe/institucion/corpac/informes-publicaciones/3612934-regiones-del-peru
+🔗 https://www.minam.gob.pe/biodiversidad/regiones-naturales/
+📝 Datos oficiales del Ministerio del Ambiente.
+
+🔗 https://www.gob.pe/institucion/minam/informes-publicaciones/3612934-regiones-del-peru
 📝 Información oficial del Estado peruano.
 
-🔗 https://www.grupodocenteperu.com/wp-content/uploads/2022/12/14-12-l-GRUPO-DOCENTE-PERU-l-CIENCIAS-SOCIALES.pdf
-📝 Guía completa con clima y biodiversidad.
-
-🔗 https://www.minam.gob.pe/biodiversidad/regiones-naturales/
-📝 Datos del Ministerio del Ambiente.""",
+🔗 https://www.peru.travel/es/descubre-peru/geografia
+📝 Guía completa con clima y biodiversidad.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Cuáles son las 3 regiones principales?
@@ -160,11 +160,11 @@ base_conocimiento = [
 🔗 https://www.universoformulas.com/matematicas/aritmetica/fracciones/
 📝 Explicación detallada y ejemplos resueltos.
 
-🔗 https://rea.ceibal.edu.uy/elp/-qu-son-las-fracciones/qu_es_una_fraccin.html
-📝 Definición sencilla con ejemplos cotidianos.
+🔗 https://es.khanacademy.org/math/arithmetic-home/fractions
+📝 Lección interactiva con ejercicios.
 
-🔗 https://www.superprof.com.ar/blog/temas-basicos-fracciones/
-📝 Consejos para usarlas correctamente.""",
+🔗 https://www.smartick.es/blog/matematicas/fracciones/que-es-una-fraccion/
+📝 Definición sencilla con ejemplos cotidianos.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Qué representa una fracción?
@@ -176,14 +176,14 @@ base_conocimiento = [
     # Fotosíntesis
     {"pregunta": "fotosíntesis", "respuesta": """📚 **¿Qué es?** El proceso por el cual las plantas fabrican su propio alimento usando luz solar, agua y aire.
 
-🔗 https://www.fundacionaquae.org/wiki/fotosintesis-plantas/
-📝 Explicación paso a paso del proceso.
-
-🔗 https://es.khanacademy.org/science/ap-biology/cellular-energetics/photosynthesis/a/intro-to-photosynthesis
+🔗 https://es.khanacademy.org/science/ap-biology/cellular-energetics/photosynthesis
 📝 Lección interactiva con gráficos.
 
-🔗 https://museovirtual.csic.es/salas/vida/vida10.htm
-📝 Recurso visual con infografías.""",
+🔗 https://www.nationalgeographicla.com/ciencia/medio-ambiente/que-es-la-fotosintesis
+📝 Explicación sencilla y visual.
+
+🔗 https://www.rjb.csic.es/la-fotosintesis/
+📝 Información del Real Jardín Botánico.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
 1. ¿Qué necesitan las plantas para hacerla?
@@ -198,10 +198,10 @@ base_conocimiento = [
 🔗 https://concepto.de/sustantivo/
 📝 Definición completa y clasificación con ejemplos.
 
-🔗 https://www.superprof.com.ar/blog/sustantivos-identificar/
+🔗 https://www.portaleducativo.net/gramatica/sustantivos
 📝 Ejercicios para reconocerlos fácilmente.
 
-🔗 https://www.rae.es/drae/sustantivo
+🔗 https://dle.rae.es/sustantivo
 📝 Normas oficiales de uso de la RAE.""",
     "cuestionario": """
 📋 **Cuestionario rápido**
@@ -274,7 +274,6 @@ def consultar():
     datos = request.get_json()
     return jsonify({"respuesta": buscar_respuesta(datos.get("pregunta", ""))})
 
-# Configuración final para Render
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
