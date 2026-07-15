@@ -84,7 +84,7 @@ base_conocimiento = [
 🔗 https://historiaperuana.pe/
 📝 Portal especializado con fechas y sucesos clave.
 
-🔗 https://www.gob.pe/ministeriodecultura/historia/
+🔗 https://www.superprof.pe/blog/peru-proceso-historico/
 📝 Información oficial del Ministerio de Cultura.
 
 🔗 https://www.peru.travel/es/descubre-peru/historia
