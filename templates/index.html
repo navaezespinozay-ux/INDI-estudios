@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>INDI - Asistente de Estudios</title>
     <style>
         * {
@@ -12,12 +12,14 @@
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
         }
 
-        body {
+        html, body {
             background-color: #000000;
             color: #e5e7eb;
-            height: 100vh;
+            height: 100%;
             display: flex;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
 
         /* Barra lateral izquierda */
@@ -86,6 +88,8 @@
             display: flex;
             flex-direction: column;
             padding: 24px 32px;
+            height: 100%;
+            min-height: 0;
         }
 
         /* Encabezado con el nombre INDI */
@@ -93,7 +97,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .nombre-app {
@@ -110,7 +115,8 @@
             font-weight: 500;
             color: #f3f4f6;
             text-align: center;
-            margin-bottom: 40px;
+            margin: auto 0;
+            padding: 20px;
         }
 
         /* Accesos rápidos */
@@ -119,7 +125,8 @@
             flex-direction: column;
             gap: 16px;
             align-items: center;
-            margin-bottom: auto;
+            margin: auto 0;
+            padding: 20px;
         }
 
         .acceso-item {
@@ -133,6 +140,7 @@
             cursor: pointer;
             transition: background 0.2s;
             width: 280px;
+            max-width: 90%;
         }
 
         .acceso-item:hover {
@@ -146,8 +154,10 @@
             margin: 0 auto;
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 24px;
+            overflow-x: hidden;
+            padding: 10px 0 20px;
             display: none;
+            min-height: 0;
         }
 
         #chat.mostrar {
@@ -159,7 +169,8 @@
             margin-bottom: 20px;
             line-height: 1.7;
             font-size: 15px;
-            white-space: pre-wrap; /* ✅ Mantiene saltos de línea y espacios */
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .mensaje-usuario {
@@ -172,25 +183,28 @@
             color: #e5e7eb;
         }
 
-        /* ✅ Estilo de enlaces cliqueables */
+        /* Enlaces funcionales */
         .mensaje-asistente a {
             color: #60a5fa;
-            text-decoration: none;
+            text-decoration: underline;
             font-weight: 500;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .mensaje-asistente a:hover {
-            text-decoration: underline;
             color: #93c5fd;
+            text-decoration: none;
         }
 
-        /* Caja de entrada */
+        /* Caja de entrada CORREGIDA para celulares */
         .contenedor-entrada {
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
             position: relative;
+            flex-shrink: 0;
+            padding: 10px 0 15px;
         }
 
         #entrada {
@@ -198,24 +212,28 @@
             background-color: #1f1f1f;
             border: 1px solid #333;
             border-radius: 24px;
-            padding: 16px 52px 16px 20px;
+            padding: 14px 50px 14px 18px;
             color: white;
-            font-size: 15px;
+            font-size: 16px; /* Tamaño legible en celulares */
             outline: none;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         #entrada:focus {
             border-color: #4b5563;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         #entrada::placeholder {
             color: #9ca3af;
+            font-size: 15px;
         }
 
         .boton-enviar {
             position: absolute;
-            right: 12px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             background-color: #3b82f6;
@@ -228,6 +246,7 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            flex-shrink: 0;
         }
 
         .boton-enviar:disabled {
@@ -255,16 +274,33 @@
             border-radius: 3px;
         }
 
-        /* Responsivo */
+        /* Responsivo MEJORADO para celulares */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
+            }
+            .contenedor-principal {
+                padding: 15px 12px;
             }
             .texto-inicio {
                 font-size: 22px;
             }
             .encabezado {
                 justify-content: center;
+            }
+            .acceso-item {
+                width: 100%;
+            }
+            .mensaje {
+                max-width: 92%;
+                font-size: 15px;
+            }
+            .contenedor-entrada {
+                padding: 8px 0 12px;
+            }
+            #entrada {
+                font-size: 16px; /* Evita que el navegador haga zoom raro */
+                padding: 13px 48px 13px 16px;
             }
         }
     </style>
@@ -332,7 +368,7 @@
         <div id="chat"></div>
 
         <div class="contenedor-entrada">
-            <input type="text" id="entrada" placeholder="Pregunta lo que quieras sobre tus temas de estudio...">
+            <input type="text" id="entrada" placeholder="Escribe tu pregunta aquí..." autocomplete="off">
             <button id="enviar" class="boton-enviar">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
             </button>
@@ -346,10 +382,10 @@
         const inicio = document.getElementById('inicio');
         const accesos = document.getElementById('accesos');
 
-        // ✅ Convierte enlaces en cliqueables
+        // Convierte enlaces en cliqueables
         function convertirEnlaces(texto) {
-            const patron = /(https?:\/\/[^\s\n]+)/g;
-            return texto.replace(patron, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+            const patronEnlaces = /(https?:\/\/[a-zA-Z0-9áéíóúñ\.\-\/\_\?\=\&]+)/g;
+            return texto.replace(patronEnlaces, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
         }
 
         // Nuevo chat
@@ -359,13 +395,14 @@
             inicio.style.display = 'block';
             accesos.style.display = 'flex';
             entrada.value = '';
+            // Oculta teclado al reiniciar
+            entrada.blur();
         }
 
-        // Agregar mensaje (con enlaces ya convertidos)
+        // Agregar mensaje con enlaces funcionales
         function agregarMensaje(texto, tipo) {
             const div = document.createElement('div');
             div.classList.add('mensaje', `mensaje-${tipo}`);
-            // Si es del asistente, convertimos enlaces y usamos HTML
             if (tipo === 'asistente') {
                 div.innerHTML = convertirEnlaces(texto);
             } else {
@@ -380,12 +417,10 @@
             const texto = entrada.value.trim();
             if (!texto) return;
 
-            // Ocultar elementos de inicio
             inicio.style.display = 'none';
             accesos.style.display = 'none';
             chat.classList.add('mostrar');
 
-            // Mostrar pregunta del usuario
             agregarMensaje(texto, 'usuario');
             entrada.value = '';
             enviar.disabled = true;
@@ -408,6 +443,15 @@
         // Eventos
         enviar.addEventListener('click', consultar);
         entrada.addEventListener('keydown', e => e.key === 'Enter' && consultar());
+
+        // Evita que el teclado mueva mal la pantalla en celulares
+        window.addEventListener('resize', () => {
+            if (document.activeElement === entrada) {
+                setTimeout(() => {
+                    entrada.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+                }, 100);
+            }
+        });
     </script>
 </body>
 </html>
