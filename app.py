@@ -14,18 +14,18 @@ nltk.download('wordnet', download_dir='/tmp/nltk_data')
 
 app = Flask(__name__)
 
-# ==================== BASE DE CONOCIMIENTO AMPLIADA ====================
+# ==================== BASE COMPLETA Y CORREGIDA ====================
 base_conocimiento = [
     # Saludos y conversación general
     {"pregunta": "hola", "respuesta": "¡Hola! Soy **INDI**, tu asistente de estudios personalizado 😊 Estoy aquí para explicarte cualquier tema con detalle, responder tus dudas y ayudarte a aprender mejor. ¿Sobre qué te gustaría conversar hoy?", "cuestionario": None},
     {"pregunta": "buenos dias", "respuesta": "¡Buenos días! Un gusto acompañarte en tu estudio. Pregúntame lo que necesites: puedo explicarte conceptos, darte ejemplos, recomendarte fuentes confiables y mucho más. ¿Por dónde empezamos?", "cuestionario": None},
     {"pregunta": "buenas tardes", "respuesta": "¡Buenas tardes! ¿Qué tal tu día? Cuéntame qué tema te interesa, y te lo explico paso a paso sin complicaciones 😊", "cuestionario": None},
     {"pregunta": "buenas noches", "respuesta": "¡Buenas noches! Claro que sí, estoy aquí para ayudarte antes de descansar. ¿Sobre qué tema quieres conversar?", "cuestionario": None},
-    {"pregunta": "quien eres", "respuesta": "Soy **INDI**, tu asistente de estudios diseñado especialmente para ayudarte a aprender temas de primaria y secundaria. Te explico todo de forma sencilla, te doy fuentes confiables y cuando tú quieras, te preparo un cuestionario para practicar. ¿En qué te ayudo?", "cuestionario": None},
-    {"pregunta": "que puedes hacer", "respuesta": "Puedo hacer muchas cosas por ti:\n✅ Explicarte cualquier tema de forma clara y detallada\n✅ Responder todas tus dudas hasta que quede todo claro\n✅ Recomendarte fuentes confiables para profundizar\n✅ Darte ejemplos prácticos\n✅ Y cuando tú me lo pidas, prepararte un cuestionario para practicar\n\n¿Qué te gustaría hacer primero?", "cuestionario": None},
+    {"pregunta": "quien eres", "respuesta": "Soy **INDI**, tu asistente de estudios diseñado especialmente para ayudarte a aprender temas de primaria y secundaria. Te explico todo de forma sencilla, te doy fuentes confiables y cuando tú quieras, te preparo un cuestionario o encuesta para practicar. ¿En qué te ayudo?", "cuestionario": None},
+    {"pregunta": "que puedes hacer", "respuesta": "Puedo hacer muchas cosas por ti:\n✅ Explicarte cualquier tema de forma clara y detallada\n✅ Responder todas tus dudas hasta que quede todo claro\n✅ Recomendarte fuentes confiables para profundizar\n✅ Darte ejemplos prácticos\n✅ Y cuando tú me lo pidas, prepararte un cuestionario o encuesta para practicar\n✅ También puedo darte las respuestas al terminar\n\n¿Qué te gustaría hacer primero?", "cuestionario": None},
     {"pregunta": "adios", "respuesta": "¡Hasta luego! Fue un gusto ayudarte. Vuelve cuando quieras seguir aprendiendo, aquí estaré 😊", "cuestionario": None},
 
-    # Matemáticas (información ampliada)
+    # Matemáticas
     {"pregunta": "matemáticas", "respuesta": """📚 **¿Qué son las matemáticas?**
 Son la ciencia que estudia las cantidades, las estructuras, el espacio y los cambios que ocurren en todo lo que nos rodea. No son solo números: nos ayudan a resolver problemas cotidianos, desde repartir dinero hasta construir edificios o viajar al espacio.
 
@@ -43,14 +43,21 @@ Las usamos todos los días: cuando compramos algo, cuando vemos la hora, cuando 
 - https://www.universoformulas.com/matematicas/ → Explicaciones claras, fórmulas y ejemplos resueltos paso a paso.
 - https://www.ck12.org/c/math/ → Material adaptado para secundaria con actividades sencillas.
 
-¿Te gustaría que te explique alguna rama en especial, o tienes alguna duda concreta sobre las matemáticas? Si quieres practicar, solo dime "hazme el cuestionario" y te lo preparo.""",
+¿Te gustaría que te explique alguna rama en especial, o tienes alguna duda concreta sobre las matemáticas? Si quieres practicar, solo dime "hazme el cuestionario" o "hazme la encuesta" y te lo preparo.""",
     "cuestionario": """
 📋 **Cuestionario de Matemáticas**
 1. ¿Qué estudian principalmente las matemáticas?
 2. ¿Cómo se llama la rama que estudia las formas y figuras?
 3. ¿Cuánto es 7 × 9?
 4. ¿Qué tipo de número es el 7: primo o compuesto?
-5. ¿Cuántos lados tiene un triángulo?"""},
+5. ¿Cuántos lados tiene un triángulo?""",
+    "respuestas": """
+✅ **Respuestas del cuestionario**:
+1. Las cantidades, estructuras, espacio y cambios.
+2. Geometría.
+3. 63.
+4. Número primo.
+5. 3 lados."""},
 
     # Ciencias
     {"pregunta": "ciencias", "respuesta": """📚 **¿Qué son las ciencias?**
@@ -69,40 +76,21 @@ Gracias a la ciencia tenemos medicinas, electricidad, internet, conocemos cómo 
 - https://www.nationalgeographicla.com/ciencia → Información visual y fiable sobre naturaleza y descubrimientos.
 - https://www.britannica.com/es/ciencia → Artículos revisados por especialistas en todas las ramas científicas.
 
-¿Te interesa saber más sobre alguna rama en especial? Si quieres poner a prueba lo aprendido, solo pídeme el cuestionario.""",
+¿Te interesa saber más sobre alguna rama en especial? Si quieres poner a prueba lo aprendido, solo pídeme el cuestionario o la encuesta.""",
     "cuestionario": """
 📋 **Cuestionario de Ciencias**
 1. ¿Qué es la fotosíntesis?
 2. ¿Cuál es el planeta donde vivimos?
 3. ¿Qué gas necesitan las plantas para vivir?
 4. ¿Qué órgano bombea la sangre en el cuerpo humano?
-5. ¿De qué elementos está hecho el agua?"""},
-
-    # Lenguaje
-    {"pregunta": "lenguaje", "respuesta": """📚 **¿Qué es el lenguaje?**
-Es la capacidad que tenemos los seres humanos para comunicarnos y expresar lo que pensamos, sentimos y sabemos. Estudia las palabras, las oraciones y las reglas para usar bien el idioma español.
-
-📌 **¿Qué aprendemos aquí?**
-✅ **Gramática**: Las reglas para formar oraciones correctas.
-✅ **Ortografía**: Cómo escribir bien las palabras.
-✅ **Vocabulario**: El significado de cada palabra.
-✅ **Comprensión**: Cómo entender lo que leemos y expresar lo que queremos decir.
-
-No es solo escribir bien: es saber comunicarte de forma clara para que los demás te entiendan.
-
-🔗 **Fuentes para profundizar**:
-- https://dle.rae.es/ → Diccionario oficial y normas correctas del idioma español.
-- https://concepto.de/lenguaje/ → Definiciones sencillas sobre palabras y tipos de lenguaje.
-- https://www.portaleducativo.net/lenguaje/ → Ejercicios de gramática y ortografía para secundaria.
-
-¿Tienes alguna duda sobre algún tipo de palabra, o quieres que te explique algo más? Si quieres practicar, solo dime "cuestionario".""",
-    "cuestionario": """
-📋 **Cuestionario de Lenguaje**
-1. ¿Qué nombra un sustantivo?
-2. ¿Qué expresa un verbo?
-3. ¿Cuál es la diferencia entre sustantivo propio y común?
-4. ¿Qué signo se usa al terminar una oración que expresa una duda?
-5. ¿Qué es una oración?"""},
+5. ¿De qué elementos está hecho el agua?""",
+    "respuestas": """
+✅ **Respuestas del cuestionario**:
+1. El proceso por el cual las plantas fabrican su alimento.
+2. La Tierra.
+3. Dióxido de carbono.
+4. El corazón.
+5. Hidrógeno y oxígeno."""},
 
     # Historia del Perú
     {"pregunta": "historia del Perú", "respuesta": """📚 **¿Qué es la historia del Perú?**
@@ -121,20 +109,32 @@ Porque así entendemos de dónde venimos, cómo se formó nuestro país y quién
 - https://www.gob.pe/ministeriodecultura/historia/ → Información oficial del Ministerio de Cultura.
 - https://www.peru.travel/es/descubre-peru/historia → Resumen estructurado de todas las etapas históricas.
 
-¿Te gustaría que te explique alguna etapa en más detalle? Cuando quieras practicar, pídeme el cuestionario.""",
+¿Te gustaría que te explique alguna etapa en más detalle? Cuando quieras practicar, pídeme el cuestionario o la encuesta.""",
     "cuestionario": """
 📋 **Cuestionario de Historia del Perú**
 1. ¿Cuál es la civilización más antigua del Perú?
 2. ¿En qué año se proclamó la independencia del Perú?
 3. ¿Quién proclamó la independencia en Lima?
 4. ¿Cómo se llamó el imperio de los incas?
-5. ¿Quién fue José de San Martín?"""},
+5. ¿Quién fue José de San Martín?""",
+    "respuestas": """
+✅ **Respuestas del cuestionario**:
+1. Caral.
+2. 1821.
+3. José de San Martín.
+4. Tahuantinsuyo.
+5. El libertador que proclamó la independencia del Perú."""},
 
-    # Cuestionario a petición
-    {"pregunta": "cuestionario", "respuesta": "¡Claro que sí! Aquí tienes el cuestionario para practicar. ¿Te gustaría que te dé las respuestas después?", "cuestionario": "ultimo"},
-    {"pregunta": "hazme el cuestionario", "respuesta": "¡Vamos a poner a prueba lo aprendido! Aquí tienes el cuestionario correspondiente. ¿Quieres que te dé las respuestas al terminar?", "cuestionario": "ultimo"},
-    {"pregunta": "quiero practicar", "respuesta": "Perfecto, aquí tienes el cuestionario para practicar. ¿Te ayudo con las respuestas luego?", "cuestionario": "ultimo"},
-    {"pregunta": "ejercicios", "respuesta": "Claro, aquí tienes los ejercicios para el tema que vimos. ¿Quieres revisar las respuestas después?", "cuestionario": "ultimo"}
+    # Peticiones de cuestionario/encuesta y respuestas
+    {"pregunta": "cuestionario", "respuesta": "¡Claro que sí! Aquí tienes el cuestionario del último tema que viste. ¿Quieres que te dé las respuestas después?", "cuestionario": "usar_ultimo"},
+    {"pregunta": "encuesta", "respuesta": "¡Claro! Aquí tienes la encuesta para practicar el último tema que consultaste. ¿Quieres ver las respuestas al terminar?", "cuestionario": "usar_ultimo"},
+    {"pregunta": "hazme el cuestionario", "respuesta": "¡Vamos a practicar! Aquí tienes el cuestionario. ¿Quieres las respuestas luego?", "cuestionario": "usar_ultimo"},
+    {"pregunta": "hazme la encuesta", "respuesta": "¡Perfecto! Aquí tienes la encuesta para el tema que vimos. ¿Quieres que te dé las respuestas después?", "cuestionario": "usar_ultimo"},
+    {"pregunta": "quiero practicar", "respuesta": "¡Muy bien! Aquí tienes el ejercicio para repasar. ¿Necesitas las respuestas?", "cuestionario": "usar_ultimo"},
+    {"pregunta": "respuestas", "respuesta": "¡Claro! Aquí tienes las respuestas del cuestionario anterior:", "cuestionario": "dar_respuestas"},
+    {"pregunta": "si respuestas", "respuesta": "Aquí tienes las respuestas del cuestionario:", "cuestionario": "dar_respuestas"},
+    {"pregunta": "dame las respuestas", "respuesta": "Claro que sí, aquí van las respuestas correctas:", "cuestionario": "dar_respuestas"},
+    {"pregunta": "si", "respuesta": "¡Perfecto! Aquí tienes las respuestas del cuestionario:", "cuestionario": "dar_respuestas"}
 ]
 
 lemmatizador = WordNetLemmatizer()
@@ -147,18 +147,11 @@ def limpiar_texto(texto):
     palabras = [lemmatizador.lemmatize(p) for p in palabras if p not in stop_words]
     return ' '.join(palabras)
 
-preguntas_limpias = [limpiar_texto(item["pregunta"]) for item in base_conocimiento]
-respuestas = [item["respuesta"] for item in base_conocimiento]
-cuestionarios = [item["cuestionario"] for item in base_conocimiento]
-
-vectorizador = TfidfVectorizer()
-matriz_tfidf = vectorizador.fit_transform(preguntas_limpias)
-
-# Guardamos el último tema que consultó el usuario
-ultimo_tema = None
+# Guardamos el último tema y su índice
+ultimo_indice = None
 
 def buscar_respuesta(pregunta_usuario):
-    global ultimo_tema
+    global ultimo_indice
     pregunta_limpia = limpiar_texto(pregunta_usuario)
     
     variantes = {
@@ -167,38 +160,45 @@ def buscar_respuesta(pregunta_usuario):
         "mate": "matemáticas",
         "lengua": "lenguaje",
         "historia peru": "historia del Perú",
-        "culturas antiguas": "culturas preincas",
-        "incas": "Imperio Incaico",
-        "tahuantinsuyo": "Imperio Incaico",
-        "regiones peru": "regiones naturales",
-        "costa sierra selva": "regiones naturales",
-        "que es fraccion": "fracciones",
-        "plantas comen luz": "fotosíntesis",
-        "que es sustantivo": "sustantivos",
         "ponme el cuestionario": "cuestionario",
-        "quiero el cuestionario": "cuestionario"
+        "ponme la encuesta": "encuesta",
+        "quiero la encuesta": "encuesta",
+        "ejercicios": "cuestionario",
+        "ver respuestas": "respuestas"
     }
 
     for var, original in variantes.items():
         if var in pregunta_limpia:
             pregunta_limpia = pregunta_limpia.replace(var, original).strip()
 
-    # Si pide cuestionario, usamos el último tema consultado
-    if "cuestionario" in pregunta_limpia or "ejercicios" in pregunta_limpia:
-        if ultimo_tema and ultimo_tema in respuestas:
-            indice = respuestas.index(ultimo_tema)
-            if cuestionarios[indice]:
-                return f"📋 **Cuestionario sobre tu último tema**:\n{cuestionarios[indice]}"
-        return "Primero consulta un tema y luego te daré el cuestionario para practicar 😊"
+    # Cargamos los datos cada vez para tenerlos actualizados
+    preguntas_limpias = [limpiar_texto(item["pregunta"]) for item in base_conocimiento]
+    respuestas = [item["respuesta"] for item in base_conocimiento]
+    cuestionarios = [item.get("cuestionario") for item in base_conocimiento]
+    respuestas_cuestionario = [item.get("respuestas") for item in base_conocimiento]
 
+    vectorizador = TfidfVectorizer()
+    matriz_tfidf = vectorizador.fit_transform(preguntas_limpias)
     vector_pregunta = vectorizador.transform([pregunta_limpia])
     similitudes = cosine_similarity(vector_pregunta, matriz_tfidf)[0]
     indice_mejor = similitudes.argmax()
 
+    # Caso 1: Pide respuestas
+    if "respuestas" in pregunta_limpia or pregunta_limpia == "si":
+        if ultimo_indice is not None and respuestas_cuestionario[ultimo_indice]:
+            return f"✅ **Respuestas correctas**:\n{respuestas_cuestionario[ultimo_indice]}"
+        return "Primero pide el cuestionario o la encuesta de un tema, y luego te daré las respuestas 😊"
+
+    # Caso 2: Pide cuestionario/encuesta
+    if similitudes[indice_mejor] > 0.03 and cuestionarios[indice_mejor] in ["usar_ultimo", "dar_respuestas"]:
+        if ultimo_indice is not None and cuestionarios[ultimo_indice]:
+            return f"{respuestas[indice_mejor]}\n\n{cuestionarios[ultimo_indice]}"
+        return "Primero consulta un tema (como matemáticas, ciencias o historia), y luego te daré la encuesta 😊"
+
+    # Caso 3: Respuesta normal de un tema
     if similitudes[indice_mejor] > 0.03:
-        respuesta_final = respuestas[indice_mejor]
-        ultimo_tema = respuesta_final
-        return respuesta_final
+        ultimo_indice = indice_mejor
+        return respuestas[indice_mejor]
     else:
         return "Puedo ayudarte con temas como matemáticas, ciencias, lenguaje, historia del Perú y mucho más. Cuéntame qué te interesa saber y te lo explico con detalle 😊"
 
