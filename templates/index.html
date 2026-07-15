@@ -110,13 +110,30 @@
             gap: 8px;
         }
 
+        /* === GATO PIXELADO CON ANIMACIÓN === */
+        .gato-inicio {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 16px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            /* Animación suave: sube y baja ligeramente */
+            animation: flotar 3s ease-in-out infinite;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
         .texto-inicio {
             font-size: 28px;
             font-weight: 500;
             color: #f3f4f6;
             text-align: center;
-            margin: auto 0;
-            padding: 20px;
+            margin: 0 0 20px;
+            padding: 0;
         }
 
         /* Accesos rápidos */
@@ -197,7 +214,7 @@
             text-decoration: none;
         }
 
-        /* Caja de entrada CORREGIDA para celulares */
+        /* Caja de entrada */
         .contenedor-entrada {
             width: 100%;
             max-width: 900px;
@@ -214,7 +231,7 @@
             border-radius: 24px;
             padding: 14px 50px 14px 18px;
             color: white;
-            font-size: 16px; /* Tamaño legible en celulares */
+            font-size: 16px;
             outline: none;
             transition: border-color 0.2s;
             -webkit-appearance: none;
@@ -274,7 +291,7 @@
             border-radius: 3px;
         }
 
-        /* Responsivo MEJORADO para celulares */
+        /* Responsivo para celulares */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -299,8 +316,11 @@
                 padding: 8px 0 12px;
             }
             #entrada {
-                font-size: 16px; /* Evita que el navegador haga zoom raro */
+                font-size: 16px;
                 padding: 13px 48px 13px 16px;
+            }
+            .gato-inicio {
+                width: 140px;
             }
         }
     </style>
@@ -348,7 +368,11 @@
             <div style="font-size: 14px; color: #9ca3af;">Asistente de Estudios</div>
         </div>
 
-        <div id="inicio" class="texto-inicio">¿Cuál es el tema de hoy?</div>
+        <!-- GATO ANIMADO -->
+        <div id="inicio">
+            <img src="https://i.imgur.com/8Z7XQZL.png" alt="Gato INDI pixelado" class="gato-inicio">
+            <div class="texto-inicio">¿Cuál es el tema de hoy?</div>
+        </div>
 
         <div id="accesos" class="accesos-rapidos">
             <div class="acceso-item">
@@ -382,24 +406,20 @@
         const inicio = document.getElementById('inicio');
         const accesos = document.getElementById('accesos');
 
-        // Convierte enlaces en cliqueables
         function convertirEnlaces(texto) {
             const patronEnlaces = /(https?:\/\/[a-zA-Z0-9áéíóúñ\.\-\/\_\?\=\&]+)/g;
             return texto.replace(patronEnlaces, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
         }
 
-        // Nuevo chat
         function nuevoChat() {
             chat.innerHTML = '';
             chat.classList.remove('mostrar');
             inicio.style.display = 'block';
             accesos.style.display = 'flex';
             entrada.value = '';
-            // Oculta teclado al reiniciar
             entrada.blur();
         }
 
-        // Agregar mensaje con enlaces funcionales
         function agregarMensaje(texto, tipo) {
             const div = document.createElement('div');
             div.classList.add('mensaje', `mensaje-${tipo}`);
@@ -412,7 +432,6 @@
             chat.scrollTop = chat.scrollHeight;
         }
 
-        // Enviar consulta
         async function consultar() {
             const texto = entrada.value.trim();
             if (!texto) return;
@@ -440,11 +459,9 @@
             }
         }
 
-        // Eventos
         enviar.addEventListener('click', consultar);
         entrada.addEventListener('keydown', e => e.key === 'Enter' && consultar());
 
-        // Evita que el teclado mueva mal la pantalla en celulares
         window.addEventListener('resize', () => {
             if (document.activeElement === entrada) {
                 setTimeout(() => {
