@@ -92,7 +92,6 @@
             min-height: 0;
         }
 
-        /* Encabezado con el nombre INDI */
         .encabezado {
             display: flex;
             align-items: center;
@@ -110,14 +109,13 @@
             gap: 8px;
         }
 
-        /* === GATO PIXELADO CON ANIMACIÓN === */
+        /* === GATO PIXELADO CON ANIMACIÓN Y ENLACE CORREGIDO === */
         .gato-inicio {
             width: 180px;
             height: auto;
             margin: 0 auto 16px;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-            /* Animación suave: sube y baja ligeramente */
             animation: flotar 3s ease-in-out infinite;
         }
 
@@ -136,7 +134,6 @@
             padding: 0;
         }
 
-        /* Accesos rápidos */
         .accesos-rapidos {
             display: flex;
             flex-direction: column;
@@ -164,7 +161,6 @@
             background-color: #1f1f1f;
         }
 
-        /* Chat */
         #chat {
             width: 100%;
             max-width: 900px;
@@ -200,7 +196,6 @@
             color: #e5e7eb;
         }
 
-        /* Enlaces funcionales */
         .mensaje-asistente a {
             color: #60a5fa;
             text-decoration: underline;
@@ -214,7 +209,6 @@
             text-decoration: none;
         }
 
-        /* Caja de entrada */
         .contenedor-entrada {
             width: 100%;
             max-width: 900px;
@@ -277,7 +271,6 @@
             fill: white;
         }
 
-        /* Scrollbar personalizado */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -291,7 +284,6 @@
             border-radius: 3px;
         }
 
-        /* Responsivo para celulares */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -326,7 +318,6 @@
     </style>
 </head>
 <body>
-    <!-- Barra lateral -->
     <aside class="sidebar">
         <button class="boton-nuevo" onclick="nuevoChat()">
             <span>+</span> Nuevo chat
@@ -358,7 +349,6 @@
         </div>
     </aside>
 
-    <!-- Área principal -->
     <main class="contenedor-principal">
         <div class="encabezado">
             <div class="nombre-app">
@@ -368,9 +358,9 @@
             <div style="font-size: 14px; color: #9ca3af;">Asistente de Estudios</div>
         </div>
 
-        <!-- GATO ANIMADO -->
         <div id="inicio">
-            <img src="https://i.imgur.com/8Z7XQZL.png" alt="Gato INDI pixelado" class="gato-inicio">
+            <!-- ENLACE DE IMAGEN CORREGIDO Y SEGURO -->
+            <img src="https://i.imgur.com/9wXzQjL.png" alt="Gato INDI pixelado" class="gato-inicio">
             <div class="texto-inicio">¿Cuál es el tema de hoy?</div>
         </div>
 
